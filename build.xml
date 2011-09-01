@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create-jar" name="Project build file">
+  <property name="project-name" value="PepperIM" />
+  <property name="main-class" value="pepperim.Main" />
+
+  <property name="build.sysclasspath" value="last" />
+  <path id="project-classpath">
+    <fileset dir="./lib" includes="**/*.jar" />
+  </path>
+
+  <target name="copy-non-java-files" description="Copy all non-java files from the source dirs">
+    <copy todir="bin" includeemptydirs="false">
+      <fileset dir="src" excludes="**/*.java" />
+    </copy>
+  </target>
+  
+  <target name="compile" depends="copy-non-java-files" description="Compile source to class files">
+    <mkdir dir="bin" />
+    <javac srcdir="src" destdir="bin" debug="yes">
+      <classpath refid="project-classpath" />
+      <compilerarg value="-Xlint"/> 
+    </javac>
+  </target>
+
+  <target name="release" depends="clean, create-zip" description="Create a distribution package from a clean build" />
+
+  <target name="checkunjar">
+      <available property="file.exists" file="unjar" />
+  </target>
+
+  <target name="unpack" depends="checkunjar" unless="file.exists" description="Unpack all 3rd party jars for repacking with the application">
+    <unjar dest="unjar" overwrite="false">
+      <fileset dir="lib" includes="**/*.jar"/>
+    </unjar>
+  </target>
+
+  <target name="create-jar" depends="compile,unpack" description="Create the executable jar">
+    <mkdir dir="release" />
+    <jar destfile="release/${project-name}.jar">
+      <manifest>
+        <attribute name="Main-Class" value="${main-class}"/>
+        <attribute name="Class-Path" value="."/>
+      </manifest>
+      <fileset dir="bin" />
+      <fileset dir="unjar" includes="**/*.class"/> 
+    </jar>
+  </target>
+
+  <target name="create-zip" depends="create-jar" description="Pack the executable jar with other files into a distribution package">
+    <zip destfile="release/${project-name}.zip">
+      <zipfileset file="README"/>
+      <zipfileset file="release/${project-name}.jar"/>
+    </zip>
+  </target>
+
+  <target name="doc" description="Generate Javadoc documentation">
+    <javadoc sourcepath="src" destdir="doc/api" author="true" version="true" use="true" windowTitle="${project-name} API" />
+  </target>
+
+  <target name="test" description="Runs the unit tests">
+    <delete dir="testresults"/>
+    <mkdir  dir="testresults"/>
+    <junit printsummary="yes" haltonfailure="no">
+      <classpath>
+          <fileset dir="release">
+              <include name="**/*.jar" />
+          </fileset>
+      </classpath>
+      <formatter type="xml"/>
+      <batchtest fork="yes" todir="testresults">
+        <fileset dir="src" includes="**/*Test.java"/>
+      </batchtest>
+    </junit>
+    <junitreport todir="testresults">
+      <fileset dir="testresults">
+        <include name="*.xml"/>
+      </fileset>
+      <report format="frames" todir="testresults"/>
+    </junitreport>
+  </target>
+
+  <target name="clean" description="Removes all generated files">
+    <delete dir="bin" />
+    <delete dir="unjar" />
+    <delete dir="release" />
+    <delete dir="doc/api" />
+    <delete dir="testresults" />
+  </target>
+</project>

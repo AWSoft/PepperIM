@@ -1,0 +1,126 @@
+No "account" -> create "Identity" file
+containing archived: Java KeyStore (new generated own Priv/Pubkey + place for "contact list" keys)
+                      + additional data
+                id-name = first 8 letters of the SHA512 hash of pubkey (works as kinda ICQ number)
+
+SERVER COMMUNICATION:
+when going online, associate ID and current IP by:
+client sends signed ID and pubkey
+HELLO <B64 X509 Pubkey> <B64 signed ID (privkey-encrypted)>
+Server verifies ID by:
+1) verifying signature -> result=ID name 2) hashing pubkey (must get same ID-name)
+on success -> Server associates IP and ID for 24 hours
+server response: OK = success, FUCKOFF = verification failed
+                 or INVALID_MSG_FORMAT
+
+get IP for ID: client sends ID, server responds with last saved IP for this ID (if any)
+GET <idname>
+server response: <IP address> or INVALID_MSG_FORMAT
+
+
+P2P COMMUNICATION:
+crypto bootstrapping:
+            { "from" : id_string, "type" : "KEYPLZ", "data" : "" }
+            note: request public key
+
+            { "from" : id_string, "type" : "KEY", data : "base64 of PKCS 8 pubkey" }
+            note: response to KEYPLZ, MUST be answered to each source 32 times a day (DDoS limit), unless ID blocked
+
+normal message exchange:
+            { "from" : id_string, "type" : "ENCMSG", "data" : "base 64 of encrypted data",
+            "sign" : "signed SHA512 hash of data part" }
+            note: data could contain literally anything, so receiver first verifies signature before even
+            starting to decrypt the data...
+            the source client shall treat the sent message as unconfirmed until it gets the correct ACK
+
+            { "from" : id_string, "type" : "ACK", "sign" : "", "data" : "msgid of received message" }
+            note: acks shall be sent only when the hash of the data section matches the hash in the signature
+
+
+unpacked data format:
+            { "from" : id_string, "type" : data_type, "data" : "unencrypted data", msgid : "msgid" }
+            from = same from like in wrapper
+            msgid = id_string + timestamp (unix epoch time) + random 4 letters
+
+differences for data types:
+
+  status:
+            { "type" : "getstatus", "data" : "" } 
+            note: polling someone for the status (e.g. when going online)
+
+            { "type" : "setstatus", "data" : "Xstatus text" }
+            note: X = Status value (integer), text is optional
+                  its sent when going online to all contacts and as response to getstatus to contacts
+
+  authorization:
+            { "type" : "authreq", "data" : "text of authorization request" }
+
+            { "type" : "authacc", "data" : "" }
+            note : authorization accept (response to authreq) -> establishes authorization one-way
+                   so the client of the authreq can write to this client now.. this one still has to ask too...
+
+            { "type" : "authdeny", "data" : "optional deny reason" }
+            note: authorization deny (response to authreq)
+
+            { "type" : "deauth", "data" : "optional de-authorization reason" }
+            note: reverts a authacc -> messages from the person get blocked now (sender of deauth can still write)
+
+  messaging:
+            { "type" : "imtext", "data" : "instant message text" }
+            note: TODO - maybe instead of plain text some encoding to enable embedded pics etc?
+
+            { "type" : "noauth", "data" : "" }
+            note: This message must be responded 8 times a day per ID, if more messages are coming,
+            they can be ignored. This message should kindly remind the sender that he is not 
+            authorized and to urge him to stop sending data or request authorization.
+
+  protocol extensions:
+            { "type" : "ext", "data" : "{ "extname" : "extension name", "version" : integer_number, 
+                                         "data" : { custom JSON object }
+                                       }"
+            }
+            note: it is the extension message format. a valid extension can request the messenger
+                  to get access to ext-type messages matching it's extname...
+                  an extension can register this silently (and also silently send extension messages
+                  with the matching extension name)
+                  all other permissions require acknowledgement by the end user (like sending 
+                  other extension message formats, or sending normal messages or changing the GUI stuff
+                  the data section here is a string containing a JSON object with the extension info,
+                  which itself has a custom data object within.
+
+            { "type" : "extfail", "data" : "extname (name of extension from the message)" }
+            note: this message is sent, if the receiver of the ext does not has a registred extension
+                  matching the message type (A has Extension Z, B doesnt have it. A sends Z msg to B, B answers extfail)
+
+
+LOCAL POLICIES
+______________
+
+CONTACT LIST MANAGEMENT
+the contact list and the public keys of the contacts are stored within the identity file.
+the contact list stores also the seperate authorization states in both ways (source -> dest and dest -> source)
+
+authorization is a convention, a kind of promise to the other side that messages will be delivered.
+If authorization is given, all messages shall be shown to the end user.
+If no authorization is given, the client may drop some message types (like status info, instant messaging, extensions etc)
+Note that PUBLIC KEY EXCHANGE IS OBLIGATORY (otherwise it would violate the whole security concept)
+
+any ID can be added to the contact list. this does not mean authorization - it has to be requested seperately
+
+any IDs not in the contact list are stored in a sepearate temporary list which is emptied on each restart.
+
+
+INVISIBILITY
+invisibility like seen in other protocols is here a local setting.
+The GUI should provide a means for the user to decide which contacts shall get status updates and which shall not.
+Therefore the identity archive may contain an invisibility setting list as an extra file, as invisibility is kind of 
+a silent extension. The invisibility list should decide the state for each contact - always inv, normal and no inv:
+always inv = invisible even in normal mode
+normal = invisible to this contact when general invisible flag is set
+no inv = visible even in invisible mode
+
+BLOCKING CONTACTS
+As the protocol works P2P, there is no way to block contacts from connecting and sending data BUT the client may
+implement ID filtering (drop message right after receiving ID, if it is blocked or just drop the message after 
+finalizing it). So blocking is another "silent extension", so the identity archive should include an additional
+ID block list.

@@ -1,0 +1,21 @@
+An experimental approach to reliable and secure instant messaging.
+Copyright (C) 2011 Anton Pirogov, Felix Wiemuth
+Licensed under the GPLv3 (see LICENSE)
+
+Instructions
+============
+
+Download:
+  git clone git://github.com/AWSoft/PepperIM.git
+
+Build jar:
+  ant
+
+Create Javadoc documentation:
+  ant doc
+
+Run JUnit tests:
+  ant test
+
+Run application:
+  java -jar release/PepperIM.jar
