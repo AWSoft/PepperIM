@@ -1,19 +1,22 @@
+/******************************************************
+ * Copyright (C) 2011 Anton Pirogov, Felix Wiemuth    *
+ * Licensed under the GNU GENERAL PUBLIC LICENSE      *
+ * See LICENSE or http://www.gnu.org/licenses/gpl.txt *
+ ******************************************************/
+
 package pepperim.backend;
 
 import pepperim.utils.*;
 import pepperim.backend.IMContactList;
-
 import java.io.*;
-
 import java.util.ArrayList;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-
 import net.sf.json.*;
 
 /**
  * Class representing an individual account.
- * @author      Anton Pirogov <anton dot pirogov at googlemail dot com> 
+ * @author Anton Pirogov <anton dot pirogov at googlemail dot com> 
  */
 public class IMIdentity {
 

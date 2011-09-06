@@ -1,3 +1,9 @@
+/******************************************************
+ * Copyright (C) 2011 Anton Pirogov, Felix Wiemuth    *
+ * Licensed under the GNU GENERAL PUBLIC LICENSE      *
+ * See LICENSE or http://www.gnu.org/licenses/gpl.txt *
+ ******************************************************/
+
 package pepperim.backend.snserver;
 
 import java.io.IOException;
@@ -19,8 +25,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 import pepperim.backend.snserver.util.ChangeRequest;
 
-//class SNServer (Simple non-blocking Server)
-
+/**
+ * Class SNServer (Simple non-blocking Server
+ * @author Felix Wiemuth
+ */
 public class SNServer extends Thread {
     private int port;
     private Selector selector;

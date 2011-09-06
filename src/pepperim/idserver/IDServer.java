@@ -1,7 +1,12 @@
+/******************************************************
+ * Copyright (C) 2011 Anton Pirogov, Felix Wiemuth    *
+ * Licensed under the GNU GENERAL PUBLIC LICENSE      *
+ * See LICENSE or http://www.gnu.org/licenses/gpl.txt *
+ ******************************************************/
+
 package pepperim.idserver;
 
 import pepperim.utils.IMCrypt;
-
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.TimerTask;
 import java.util.Timer;

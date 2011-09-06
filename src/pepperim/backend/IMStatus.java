@@ -1,8 +1,14 @@
+/******************************************************
+ * Copyright (C) 2011 Anton Pirogov, Felix Wiemuth    *
+ * Licensed under the GNU GENERAL PUBLIC LICENSE      *
+ * See LICENSE or http://www.gnu.org/licenses/gpl.txt *
+ ******************************************************/
+
 package pepperim.backend;
 
 /**
  * Class representing the online state of a client
- * @author      Anton Pirogov <anton dot pirogov at googlemail dot com> 
+ * @author Anton Pirogov <anton dot pirogov at googlemail dot com> 
  */
 public class IMStatus {
     public enum Status {

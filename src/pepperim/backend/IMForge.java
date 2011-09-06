@@ -1,19 +1,23 @@
+/******************************************************
+ * Copyright (C) 2011 Anton Pirogov, Felix Wiemuth    *
+ * Licensed under the GNU GENERAL PUBLIC LICENSE      *
+ * See LICENSE or http://www.gnu.org/licenses/gpl.txt *
+ ******************************************************/
+
 package pepperim.backend;
 
 import pepperim.utils.*;
 import pepperim.backend.IMIdentity;
 import pepperim.backend.IMStatus;
-
 import java.util.Date;
 import java.util.ArrayList;
-
 import net.sf.json.*;
 import java.security.PublicKey;
 import java.security.PrivateKey;
 
 /**
  * Class providing methods to pack/unpack ready-to-send packages
- * @author      Anton Pirogov <anton dot pirogov at googlemail dot com> 
+ * @author Anton Pirogov <anton dot pirogov at googlemail dot com> 
  */
 public class IMForge {
 

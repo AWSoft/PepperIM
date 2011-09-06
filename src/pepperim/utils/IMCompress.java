@@ -1,3 +1,9 @@
+/******************************************************
+ * Copyright (C) 2011 Anton Pirogov, Felix Wiemuth    *
+ * Licensed under the GNU GENERAL PUBLIC LICENSE      *
+ * See LICENSE or http://www.gnu.org/licenses/gpl.txt *
+ ******************************************************/
+
 package pepperim.utils;
 
 import java.io.*;
@@ -5,7 +11,7 @@ import java.util.zip.*;
 
 /**
  * A class providing a simple interface for GZip compression.
- * @author      Anton Pirogov <anton dot pirogov at googlemail dot com> 
+ * @author Anton Pirogov <anton dot pirogov at googlemail dot com> 
  */
 public class IMCompress {
     /**

@@ -1,12 +1,16 @@
+/******************************************************
+ * Copyright (C) 2011 Anton Pirogov, Felix Wiemuth    *
+ * Licensed under the GNU GENERAL PUBLIC LICENSE      *
+ * See LICENSE or http://www.gnu.org/licenses/gpl.txt *
+ ******************************************************/
+
 package pepperim.utils;
 
 import org.apache.commons.codec.binary.Base64;
-
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
-
 import java.util.Random;
 import java.security.*;
 import java.security.spec.*;
@@ -15,7 +19,7 @@ import javax.crypto.spec.*;
 
 /**
  * A class providing all cryptography-relevant functions.
- * @author      Anton Pirogov <anton dot pirogov at googlemail dot com> 
+ * @author Anton Pirogov <anton dot pirogov at googlemail dot com> 
  */
 public class IMCrypt {
     static final String HEXES = "0123456789abcdef";

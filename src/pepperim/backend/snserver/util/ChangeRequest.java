@@ -1,9 +1,17 @@
-package pepperim.backend.snserver.util;
+/******************************************************
+ * Copyright (C) 2011 Anton Pirogov, Felix Wiemuth    *
+ * Licensed under the GNU GENERAL PUBLIC LICENSE      *
+ * See LICENSE or http://www.gnu.org/licenses/gpl.txt *
+ ******************************************************/
 
-//TODO types for REGISTER KEY-ID, ...
+package pepperim.backend.snserver.util;
 
 import java.nio.channels.SocketChannel;
 
+/**
+ * Class ChangeRequest
+ * @author Felix Wiemuth
+ */
 public class ChangeRequest {
     public enum Type {
         REGISTER,
