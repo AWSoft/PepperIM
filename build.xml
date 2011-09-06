@@ -68,7 +68,7 @@
       </classpath>
       <formatter type="xml"/>
       <batchtest fork="yes" todir="testresults">
-        <fileset dir="src" includes="**/*Test.java"/>
+        <fileset dir="test" includes="**/*Test.java"/>
       </batchtest>
     </junit>
     <junitreport todir="testresults">
