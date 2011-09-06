@@ -1,21 +1,36 @@
-package pepperim.test;
+package pepperim.utils;
 
-import junit.framework.*;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-import pepperim.utils.IMCrypt;
-import java.security.*;
-
-import pepperim.utils.IMCompress;
-
-/**
- * Testing IMCrypt and IMCompress
- */
-public class UtilsTest extends TestCase {
-  
-    public UtilsTest(String name) {
-        super(name);
+public class IMCryptTest {
+    
+    public IMCryptTest() {
     }
 
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+    
+    @Before
+    public void setUp() {
+    }
+    
+    @After
+    public void tearDown() {
+    }
+
+    @Test
     public void testHexBinHex() {
         byte [] testdata = { 0,0, 1, 126, 64, 5, 0 };
         String hex = IMCrypt.binToHex(testdata);
@@ -23,12 +38,14 @@ public class UtilsTest extends TestCase {
         String hex2 = IMCrypt.binToHex(back);
         assertEquals(hex, hex2);
     }
-
+    
+    @Test
     public void testSHA512() {
         String hash = IMCrypt.SHA512("penis\n");
         assertEquals(hash,"de42f972783cde6246a1deb0698605420be100a03f1c6ffb2560a9ac4166c0e02346db3ed0bbe263b230461364561681529c2bb7f9ecdd646e08e09d97abf066");
     }
-
+    
+    @Test
     public void testB64() {
         byte[] data="This is just some test data".getBytes();
         String enc = IMCrypt.B64_Enc(data);
@@ -38,7 +55,8 @@ public class UtilsTest extends TestCase {
         for(int i=0; i<data.length; i++)
           assertEquals(data[i], dec[i]);
     }
-
+    
+    @Test
     public void testAES() {
         String str = "This is some text to test the AES encryption";
 
@@ -59,7 +77,8 @@ public class UtilsTest extends TestCase {
         assertEquals("",fail2);
         assertEquals("",fail3);
     }
-
+    
+    @Test
     public void testRSA() {
         String str = "This is some text to test the RSA encryption";
 
@@ -93,17 +112,5 @@ public class UtilsTest extends TestCase {
         String sig = IMCrypt.RSA_Sign(str, privk);
         assertTrue( IMCrypt.RSA_Verify(str, sig, pubk) );
         assertFalse( IMCrypt.RSA_Verify("changed data", sig, pubk) );
-    }
-
-    public void testGZip() {
-        String str = "This is some longer string to be compressed with the GZip algorithm using the IMCompress class";
-        
-        assertEquals(null, IMCompress.zip(null));
-        assertEquals("", IMCompress.unzip(null));
-        assertEquals("", IMCompress.unzip("invalid gzip data".getBytes()));
-
-        byte[] comp = IMCompress.zip(str);
-        String back = IMCompress.unzip(comp);
-        assertEquals(str, back);
     }
 }
