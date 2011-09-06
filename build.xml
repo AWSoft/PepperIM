@@ -20,6 +20,10 @@
       <classpath refid="project-classpath" />
       <compilerarg value="-Xlint"/> 
     </javac>
+    <javac srcdir="test" destdir="bin" debug="yes">
+      <classpath refid="project-classpath" />
+      <compilerarg value="-Xlint"/> 
+    </javac>
   </target>
 
   <target name="release" depends="clean, create-zip" description="Create a distribution package from a clean build" />
