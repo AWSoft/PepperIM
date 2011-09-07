@@ -1,0 +1,16 @@
+General
+=======
+- Try not to exceed the 80-character "red line"
+
+DOCUMENTATION
+=============
+- Use Javadoc style (at least: description (class, method), @param, @return @throws)
+- Use common "tags": //TODO //FIXME //NOTE ...
+- Comment code when necessary: to clarify meaning, avoid misunderstandings, ...
+
+SPECIFIER
+=========
+
+
+INDENTATION
+===========
