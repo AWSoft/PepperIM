@@ -10,13 +10,14 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import pepperim.backend.snserver.SnserverSuite;
 
 /**
  *
  * @author Anton Pirogov
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({pepperim.backend.IMStatusTest.class, pepperim.backend.IMForgeTest.class, pepperim.backend.snserver.SnserverSuite.class, pepperim.backend.IMContactListTest.class, pepperim.backend.IMContactTest.class, pepperim.backend.IMIdentityTest.class})
+@Suite.SuiteClasses({IMContactListTest.class, IMIdentityTest.class, IMContactTest.class, SnserverSuite.class, IMStatusTest.class, IMForgeTest.class})
 public class BackendSuite {
 
     @BeforeClass

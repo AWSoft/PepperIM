@@ -4,7 +4,7 @@
  * See LICENSE or http://www.gnu.org/licenses/gpl.txt *
  ******************************************************/
 
-package pepperim.backend.snserver.util;
+package pepperim.base;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -16,8 +16,8 @@ import org.junit.runners.Suite;
  * @author Felix Wiemuth
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ChangeRequestTest.class, RawMessageTest.class})
-public class UtilSuite {
+@Suite.SuiteClasses({pepperim.base.BaseTest.class})
+public class BaseSuite {
 
     @BeforeClass
     public static void setUpClass() throws Exception {

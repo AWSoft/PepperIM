@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({pepperim.utils.IMCryptTest.class, pepperim.utils.IMCompressTest.class})
+@Suite.SuiteClasses({SleepControlTest.class, IMCompressTest.class, IMCryptTest.class})
 public class UtilsSuite {
 
     @BeforeClass
