@@ -7,7 +7,7 @@
 package pepperim.backend;
 
 import pepperim.backend.IMContact;
-import pepperim.utils.IMCrypt;
+import pepperim.util.IMCrypt;
 import java.security.PublicKey;
 import net.sf.json.*;
 

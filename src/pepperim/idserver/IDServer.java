@@ -6,7 +6,7 @@
 
 package pepperim.idserver;
 
-import pepperim.utils.IMCrypt;
+import pepperim.util.IMCrypt;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.TimerTask;
 import java.util.Timer;

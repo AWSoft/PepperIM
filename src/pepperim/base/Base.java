@@ -8,8 +8,8 @@ package pepperim.base;
 
 import pepperim.backend.snserver.SNServer;
 import pepperim.backend.snserver.util.RawMessage;
-import pepperim.utils.SleepControl;
-import pepperim.utils.SleepControl.SleepControlSettingsException;
+import pepperim.util.SleepControl;
+import pepperim.util.SleepControl.SleepControlSettingsException;
 
 /**
  * Class handling the main application flow.

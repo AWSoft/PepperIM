@@ -4,7 +4,7 @@
  * See LICENSE or http://www.gnu.org/licenses/gpl.txt *
  ******************************************************/
 
-package pepperim.utils;
+package pepperim.util;
 
 import java.io.*;
 import java.util.zip.*;

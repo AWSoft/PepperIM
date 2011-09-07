@@ -1,4 +1,4 @@
-package pepperim.utils;
+package pepperim.util;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

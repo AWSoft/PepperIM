@@ -6,7 +6,7 @@
 
 package pepperim.backend;
 
-import pepperim.utils.*;
+import pepperim.util.*;
 import pepperim.backend.IMIdentity;
 import pepperim.backend.IMStatus;
 import java.util.Date;

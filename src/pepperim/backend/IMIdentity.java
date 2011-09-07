@@ -6,7 +6,7 @@
 
 package pepperim.backend;
 
-import pepperim.utils.*;
+import pepperim.util.*;
 import pepperim.backend.IMContactList;
 import java.io.*;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package pepperim.utils;
+package pepperim.util;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
