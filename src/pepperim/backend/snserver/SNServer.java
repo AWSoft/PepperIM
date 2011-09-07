@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 import pepperim.backend.snserver.util.ChangeRequest;
+import pepperim.backend.snserver.util.RawMessage;
 
 /**
  * Class SNServer (Simple non-blocking Server
@@ -35,7 +36,7 @@ public class SNServer extends Thread {
     private ConcurrentMap<InetSocketAddress, SelectionKey> keys; // ID -> associated key
     private ConcurrentMap<SocketChannel,List<byte[]>> to_send; //channel -> data to be send from this channel
     private StringBuilder in_buffer; //buffer to incoming data until seperator is found and messages are stored in 'in_msg'
-    private ConcurrentLinkedQueue<String> in_msg; //incoming messages to be fetched by messenger thread
+    private ConcurrentLinkedQueue<RawMessage> in_msg; //incoming messages to be fetched by messenger thread
     private ConcurrentLinkedQueue<ChangeRequest> pendingChanges; //changes to do before 'Selector.select()' is called
 
     public SNServer(int port) {
@@ -206,7 +207,7 @@ public class SNServer extends Thread {
         //check if there is a complete message in 'in_buffer'
         int pos = in_buffer.indexOf("\n");
         if (pos != -1) {
-            in_msg.add(in_buffer.substring(0, pos));
+            in_msg.add(new RawMessage(RawMessage.Type.CLIENT_MSG, in_buffer.substring(0, pos)));
             in_buffer.delete(0, pos+1);
         }
     }
@@ -284,7 +285,7 @@ public class SNServer extends Thread {
             //TODO handle
     }
     
-    public String get_message() {
+    public RawMessage getMessage() {
         return in_msg.poll();
     }
     
