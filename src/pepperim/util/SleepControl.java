@@ -18,19 +18,20 @@ public class SleepControl {
      * parameters given are not valid.
      */
     public static class SleepControlSettingsException extends Exception {
+        private static final long serialVersionUID = 1L;
         public SleepControlSettingsException(String msg) {
             super(msg);
         }
     }
-    
+
     //poll frequence in normal mode [0] / suspend modes [1]..[n]
     final private int[] sleepTime;
     //times of null-poll until going into next suspend mode
     final private int[] increaseCount;
-    
+
     private int cnt;
     private int sleepMode;
-    
+
     /**
      * Create a new sleep controller with own counter/state and settings
      * @param sleepTime Times (milliseconds) to sleep at different steps/modes:
@@ -52,7 +53,7 @@ public class SleepControl {
             increaseCount[i] /= sleepTime[i];
         reset();
     }
-    
+
     /**
      * Count an operation as idle - increment the internal counter towards an
      * increasing of sleep time as specified in constructor
@@ -66,7 +67,7 @@ public class SleepControl {
                 break;
         }
     }
-    
+
     /**
      * Tell SleepControl that an operation was not idle so the sleep time is
      * resetted to the first specified in constructor
@@ -75,14 +76,14 @@ public class SleepControl {
         cnt = 0;
         sleepMode = 0;
     }
-    
+
     /**
      * Perform a sleep regarding the current status which depends on parameters
      * given in constructor
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public void sleep() throws InterruptedException {
         Thread.sleep(sleepTime[sleepMode]);
     }
-    
+
 }

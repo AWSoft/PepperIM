@@ -41,11 +41,11 @@ public class SNServer extends Thread {
 
     public SNServer(int port) {
         this.port = port;
-        to_send = new ConcurrentHashMap();
+        to_send = new ConcurrentHashMap<SocketChannel,List<byte[]>>();
         in_buffer = new StringBuilder();
-        in_msg = new ConcurrentLinkedQueue();
-        pendingChanges = new ConcurrentLinkedQueue();
-        keys = new ConcurrentHashMap();
+        in_msg = new ConcurrentLinkedQueue<RawMessage>();
+        pendingChanges = new ConcurrentLinkedQueue<ChangeRequest>();
+        keys = new ConcurrentHashMap<InetSocketAddress, SelectionKey>();
     }
 
     public void start_server() throws IOException {
@@ -59,13 +59,13 @@ public class SNServer extends Thread {
         serverChannel.socket().bind(listenAddr);
         serverChannel.register(selector, SelectionKey.OP_ACCEPT);
 
-        log("Echo server ready. Ctrl-C to stop.");        
+        log("Echo server ready. Ctrl-C to stop.");
         main();
     }
-    
+
     /**
      * Servers main loop
-     * @throws IOException 
+     * @throws IOException
      */
     private void main() throws IOException {
         while (true) {
@@ -73,7 +73,7 @@ public class SNServer extends Thread {
             do_selection();
         }
     }
-    
+
     private void process_canges() throws IOException {
         while (true) {
                 ChangeRequest change = pendingChanges.poll();
@@ -91,13 +91,13 @@ public class SNServer extends Thread {
                 }
         }
     }
-    
+
     private void do_selection() throws IOException {
         // wait for events
         // timeout 1000ms -> check for pendingChanges at least every second
         if (selector.select(1000) == 0)
             return;
-        
+
         // wakeup to work on selected keys
         Iterator keys = selector.selectedKeys().iterator();
         while (keys.hasNext()) {
@@ -120,13 +120,13 @@ public class SNServer extends Thread {
             else if(key.isConnectable()) {
                 connect(key);
             }
-        }        
+        }
     }
-    
+
     /**
      * Register the channel/key of a new connection with Selector and Maps for
      * further IO
-     * @param key Key 
+     * @param key Key
      */
     private void register_connection(SocketChannel channel) throws IOException {
         SelectionKey key = channel.register(selector, SelectionKey.OP_READ); //TODO necessary? (OP_READ)
@@ -139,21 +139,21 @@ public class SNServer extends Thread {
     /**
      * Procedure OP_ACCEPT of selector
      * @param key Key of this server
-     * @throws IOException 
+     * @throws IOException
      */
     private void accept(SelectionKey key) throws IOException {
         ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel();
         SocketChannel channel = serverChannel.accept();
         channel.configureBlocking(false);
-        
+
         //send_message(key, "Welcome."); //DEBUG
         Socket socket = channel.socket();
         SocketAddress remoteAddr = socket.getRemoteSocketAddress();
         log("Connected to: " + remoteAddr); //DEBUG
-        
+
         register_connection(channel);
     }
-    
+
     /**
      * Procedure OP_CONNECT of selector
      * @param key Connectable key
@@ -198,12 +198,12 @@ public class SNServer extends Thread {
             channel.close();
             return;
         }
-        
+
         //add new data to 'in_buffer'
         byte[] data = new byte[numRead];
         System.arraycopy(buffer.array(), 0, data, 0, numRead);
         in_buffer.append(new String(data, "utf-8"));
-        
+
         //check if there is a complete message in 'in_buffer'
         int pos = in_buffer.indexOf("\n");
         if (pos != -1) {
@@ -236,7 +236,7 @@ public class SNServer extends Thread {
 
         pendingData.add(data);
     }
-    
+
     private void send_message(SelectionKey key, String msg) {
         String msg_marked = msg + '\n'; //add seperator to end of message
         try {
@@ -250,7 +250,7 @@ public class SNServer extends Thread {
     private static void log(String s) {
         System.out.println(s);
     }
-    
+
     @Override
     public void run() {
         try {
@@ -261,9 +261,9 @@ public class SNServer extends Thread {
             //TODO handle exception
         }
     }
-    
+
     public void init_connect(String addr, int port) {
-        try {           
+        try {
             // Create a non-blocking channel
             SocketChannel channel = SocketChannel.open();
             channel.configureBlocking(false);
@@ -276,7 +276,7 @@ public class SNServer extends Thread {
             //TODO handle
         }
     }
-    
+
     public void send_message(InetSocketAddress addr, String msg) {
         SelectionKey key = keys.get(addr);
         if (key != null)
@@ -284,9 +284,9 @@ public class SNServer extends Thread {
         //else
             //TODO handle
     }
-    
+
     public RawMessage getMessage() {
         return in_msg.poll();
     }
-    
+
 }
