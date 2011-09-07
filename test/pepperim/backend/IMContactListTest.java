@@ -1,10 +1,36 @@
+/******************************************************
+ * Copyright (C) 2011 Anton Pirogov, Felix Wiemuth    *
+ * Licensed under the GNU GENERAL PUBLIC LICENSE      *
+ * See LICENSE or http://www.gnu.org/licenses/gpl.txt *
+ ******************************************************/
+
 package pepperim.backend;
 
-import junit.framework.*;
 import net.sf.json.JSONSerializer;
 import net.sf.json.JSONArray;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class IMContactListTest extends TestCase {
+/**
+ *
+ * @author Anton Pirogov
+ */
+public class IMContactListTest {
+    
+    public IMContactListTest() {
+    }
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
+    @Test
     public void testIMContactList() {
         IMIdentity testid = new IMIdentity();
         IMIdentity testid2 = new IMIdentity();

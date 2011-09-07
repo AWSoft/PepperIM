@@ -1,18 +1,30 @@
+/******************************************************
+ * Copyright (C) 2011 Anton Pirogov, Felix Wiemuth    *
+ * Licensed under the GNU GENERAL PUBLIC LICENSE      *
+ * See LICENSE or http://www.gnu.org/licenses/gpl.txt *
+ ******************************************************/
+
 package pepperim.backend;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-public class BackendSuite extends TestSuite {
+/**
+ *
+ * @author Anton Pirogov
+ */
+@RunWith(Suite.class)
+@Suite.SuiteClasses({pepperim.backend.IMStatusTest.class, pepperim.backend.IMForgeTest.class, pepperim.backend.snserver.SnserverSuite.class, pepperim.backend.IMContactListTest.class, pepperim.backend.IMContactTest.class, pepperim.backend.IMIdentityTest.class})
+public class BackendSuite {
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite("Backend Test Suite");
-        
-        suite.addTestSuite(pepperim.backend.IMContactListTest.class);
-        suite.addTestSuite(pepperim.backend.IMForgeTest.class);
-        suite.addTestSuite(pepperim.backend.IMIdentityTest.class);
-        suite.addTestSuite(pepperim.backend.IMStatusTest.class);
-        
-        return suite;
-    }    
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+    
 }

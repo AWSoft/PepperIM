@@ -15,9 +15,9 @@ import static org.junit.Assert.*;
  *
  * @author Anton Pirogov
  */
-public class IMStatusTest {
+public class IMContactTest {
     
-    public IMStatusTest() {
+    public IMContactTest() {
     }
 
     @BeforeClass
@@ -29,9 +29,6 @@ public class IMStatusTest {
     }
 
     @Test
-    public void testIMStatus() {
-        assertEquals("", new IMStatus(new IMStatus(IMStatus.Status.ONLINE, null).toString()).getMessage());
-        assertEquals("", new IMStatus(new IMStatus(IMStatus.Status.ONLINE, "").toString()).getMessage());
-        assertEquals("Hello, world", new IMStatus(new IMStatus(IMStatus.Status.ONLINE, "Hello, world").toString()).getMessage());
+    public void testSomeMethod() {
     }
 }
