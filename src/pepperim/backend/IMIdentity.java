@@ -16,7 +16,7 @@ import net.sf.json.*;
 
 /**
  * Class representing an individual account.
- * @author Anton Pirogov <anton dot pirogov at googlemail dot com> 
+ * @author Anton Pirogov <anton dot pirogov at googlemail dot com>
  */
 public class IMIdentity {
 
@@ -27,7 +27,7 @@ public class IMIdentity {
     private IMContactList clist = null;
 
     //not directly saved in json
-    private String pass=null; 
+    private String pass=null;
     private PrivateKey priv = null;
     private PublicKey pub = null;
     //..........
@@ -41,7 +41,6 @@ public class IMIdentity {
         keysarr.add(strpriv);
         JSONObject ret = new JSONObject().element("id",id).element("keypair",keysarr)
                                .element("contacts",clist.toJSONArray()).element("extdata",extdata);
-        System.out.println(ret.toString());
         return ret;
     }
 
@@ -87,7 +86,7 @@ public class IMIdentity {
             if (dat.equals(""))
                 throw new Exception("Invalid Identity password!");
         }
-        
+
         try {
           JSONObject iddata = (JSONObject) JSONSerializer.toJSON( dat );
 
@@ -103,7 +102,7 @@ public class IMIdentity {
           this.priv = IMCrypt.decodePrivateKey(strpriv);
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
             throw new Exception("Identity file is password protected!");
         }
     }
@@ -123,7 +122,7 @@ public class IMIdentity {
     public boolean save(String filename) {
         String data = toJSONObject().toString();
         try {
-          
+
           if (this.pass != null) {
               data = IMCrypt.AES_Enc(data, pass);
               if (data.equals(""))
@@ -136,9 +135,9 @@ public class IMIdentity {
           out.close();
           return true;
         }
-        
+
         catch (IOException e) {
-          e.printStackTrace();
+          System.err.println(e.getMessage());
           return false;
         }
     }
@@ -161,7 +160,7 @@ public class IMIdentity {
     public static String IDfromPubkey(PublicKey pub) {
         return IDfromPubkey(IMCrypt.B64_Enc(pub.getEncoded()));
     }
-    
+
 
     //-----------------------------------------------
 

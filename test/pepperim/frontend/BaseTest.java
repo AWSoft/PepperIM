@@ -4,20 +4,21 @@
  * See LICENSE or http://www.gnu.org/licenses/gpl.txt *
  ******************************************************/
 
-package pepperim.base;
+package pepperim.frontend;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author Felix Wiemuth
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({pepperim.base.BaseTest.class})
-public class BaseSuite {
+public class BaseTest {
+
+    public BaseTest() {
+    }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -26,5 +27,8 @@ public class BaseSuite {
     @AfterClass
     public static void tearDownClass() throws Exception {
     }
-    
+
+    @Test
+    public void testSomeMethod() {
+    }
 }

@@ -69,12 +69,12 @@ public class SNServer extends Thread {
      */
     private void main() throws IOException {
         while (true) {
-            process_canges();
+            process_changes();
             do_selection();
         }
     }
 
-    private void process_canges() throws IOException {
+    private void process_changes() throws IOException {
         while (true) {
                 ChangeRequest change = pendingChanges.poll();
                 if (change == null)
@@ -248,7 +248,7 @@ public class SNServer extends Thread {
     }
 
     private static void log(String s) {
-        System.out.println(s);
+        System.err.println(s);
     }
 
     @Override
@@ -257,7 +257,7 @@ public class SNServer extends Thread {
             start_server();
         }
         catch (IOException e) {
-            System.out.println("IOException: " + e);
+            System.err.println("IOException: " + e);
             //TODO handle exception
         }
     }

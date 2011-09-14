@@ -4,7 +4,7 @@
  * See LICENSE or http://www.gnu.org/licenses/gpl.txt *
  ******************************************************/
 
-package pepperim.base;
+package pepperim.frontend;
 
 import pepperim.backend.snserver.SNServer;
 import pepperim.backend.snserver.util.RawMessage;
@@ -19,20 +19,12 @@ import pepperim.util.SleepControl.SleepControlSettingsException;
  */
 public abstract class Base extends Thread {
     //Server
-    private SNServer server;
-    
+    protected SNServer server;
+
     /**
-     * Create a new object of this class
+     * Loop listening and processing messages (to be run in a thread)
      */
-    public Base() {
-        //NOTE port 9699 is the temporary used fixed port until port chosing by system is implemented
-        server = new SNServer(9699);
-    }
-    
-    /**
-     * Main loop of messenger program
-     */
-    public void main () throws InterruptedException {
+    public void processMessages() {
         int[] sleepTime = {100, 1000, 5000};
         int[] increaseTime = {0, 10000, 120000};
         SleepControl sleepControl = null;
@@ -42,9 +34,9 @@ public abstract class Base extends Thread {
         catch (SleepControlSettingsException e) {
             //--- changed code to avoid exception ---
         }
-        
+
         RawMessage raw;
-        
+
         while(true) {
             while(true) {
                 raw = server.getMessage();
@@ -62,30 +54,34 @@ public abstract class Base extends Thread {
                             break;
                         default:
                             process_systemMsg(raw);
-                            break;                        
+                            break;
                     }
                 }
             }
-            sleepControl.sleep();
+            try { sleepControl.sleep(); } catch (InterruptedException e) {}
         }
     }
-    
+
     public void process_clientMsg(String msg) {
-        
+
     }
-    
+
     public void process_systemMsg(RawMessage raw) {
-        
+
     }
-    
+
     /**
      * Display an incoming client message via the user interface to the user.
      * @param msg Message to be displayed
-     */
+    */
     public abstract void displayMsg(String msg);
-    
+
+    protected void initServer(int port) {
+      server = new SNServer(port);
+    }
+
     @Override
     public void run() {
-        server.start();        
-    }    
+      server.start();
+    }
 }

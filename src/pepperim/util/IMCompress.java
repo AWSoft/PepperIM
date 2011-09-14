@@ -11,7 +11,7 @@ import java.util.zip.*;
 
 /**
  * A class providing a simple interface for GZip compression.
- * @author Anton Pirogov <anton dot pirogov at googlemail dot com> 
+ * @author Anton Pirogov <anton dot pirogov at googlemail dot com>
  */
 public class IMCompress {
     /**
@@ -26,9 +26,9 @@ public class IMCompress {
         zip.write(dat,0,dat.length);
         zip.finish();
         return compr.toByteArray();
-        
-        } catch (Exception e) { 
-            e.printStackTrace();    
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
             return null;
         }
     }
@@ -50,7 +50,7 @@ public class IMCompress {
         return unzipped.toString();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
             return "";
         }
     }

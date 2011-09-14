@@ -19,7 +19,7 @@ import javax.crypto.spec.*;
 
 /**
  * A class providing all cryptography-relevant functions.
- * @author Anton Pirogov <anton dot pirogov at googlemail dot com> 
+ * @author Anton Pirogov <anton dot pirogov at googlemail dot com>
  */
 public class IMCrypt {
     static final String HEXES = "0123456789abcdef";
@@ -46,7 +46,7 @@ public class IMCrypt {
     public static String B64_Enc(byte[] data) {
         return new String(new Base64().encodeBase64(data));
     }
-    
+
     /**
      * @param data data string to be decoded
      * @return decoded data
@@ -84,7 +84,7 @@ public class IMCrypt {
         return hex.toString();
     }
 
-    
+
     /**
      * @param text String to be hashed
      * @return SHA512-hash
@@ -99,19 +99,19 @@ public class IMCrypt {
             hash = md.digest();
             return binToHex(hash);
         }
-        
+
         catch (NoSuchAlgorithmException ex)
         {
-            System.out.println(ex.getMessage());
+            System.err.println(ex.getMessage());
             return "";
         }
         catch (UnsupportedEncodingException ex)
-        {   
-            System.out.println(ex.getMessage());
+        {
+            System.err.println(ex.getMessage());
             return "";
         }
     }
-    
+
 
 
     /**
@@ -121,16 +121,16 @@ public class IMCrypt {
     public static String AES_genKey() {
         try {
             KeyGenerator kgen = KeyGenerator.getInstance("AES");
-              
+
             kgen.init(128);
             SecretKey skey = kgen.generateKey();
             byte[] raw = skey.getEncoded();
- 
+
             return binToHex(raw);
-        
+
         }
         catch (NoSuchAlgorithmException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             return "";
         }
     }
@@ -143,17 +143,17 @@ public class IMCrypt {
     public static String AES_Enc(String data, String key) {
         try {
         SecretKeySpec skeySpec = new SecretKeySpec(hexToBin(key), "AES");
- 
+
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
         return B64_Enc(cipher.doFinal(data.getBytes()));
         }
         catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             return "";
         }
     }
-    
+
     /**
      * @param data data to be decrypted (Base64-encoded)
      * @param key key to be used
@@ -162,13 +162,13 @@ public class IMCrypt {
     public static String AES_Dec(String data, String key) {
         try {
         SecretKeySpec skeySpec = new SecretKeySpec(hexToBin(key), "AES");
- 
+
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, skeySpec);
         return new String(cipher.doFinal(B64_Dec(data)));
         }
         catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             return "";
         }
     }
@@ -189,7 +189,7 @@ public class IMCrypt {
             keypair[1] = B64_Enc(keyPair.getPrivate().getEncoded());
             return keypair;
         } catch (GeneralSecurityException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             return null;
         }
     }
@@ -206,7 +206,7 @@ public class IMCrypt {
             PrivateKey pk = kf.generatePrivate(ks);
             return pk;
         } catch (GeneralSecurityException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             return null;
         }
     }
@@ -223,7 +223,7 @@ public class IMCrypt {
             PublicKey pk = kf.generatePublic(ks);
             return pk;
         } catch (GeneralSecurityException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             return null;
         }
     }
@@ -240,7 +240,7 @@ public class IMCrypt {
         c.init(Cipher.ENCRYPT_MODE, key);
         return B64_Enc(c.doFinal(data.getBytes()));
         } catch (GeneralSecurityException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             return "";
         }
     }
@@ -256,7 +256,7 @@ public class IMCrypt {
         c.init(Cipher.DECRYPT_MODE, key);
         return new String(c.doFinal(B64_Dec(data)));
         } catch (GeneralSecurityException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             return "";
         }
     }
@@ -275,7 +275,7 @@ public class IMCrypt {
         byte[] signature = signer.sign();
         return B64_Enc(signature);
         } catch (GeneralSecurityException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             return "";
         }
     }
@@ -293,7 +293,7 @@ public class IMCrypt {
         verifier.update(data.getBytes());
         return verifier.verify(B64_Dec(b64sig));
         } catch (GeneralSecurityException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             return false;
         }
     }

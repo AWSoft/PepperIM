@@ -17,7 +17,7 @@ import java.security.PrivateKey;
 
 /**
  * Class providing methods to pack/unpack ready-to-send packages
- * @author Anton Pirogov <anton dot pirogov at googlemail dot com> 
+ * @author Anton Pirogov <anton dot pirogov at googlemail dot com>
  */
 public class IMForge {
 
@@ -92,7 +92,7 @@ public class IMForge {
      */
     public String packMessage(JSONObject jsondata, PublicKey dest) {
         String key = IMCrypt.AES_genKey();
-        
+
         String enckey = IMCrypt.RSA_Enc(key, dest);
         if (enckey.equals(""))
             return "";
@@ -153,19 +153,19 @@ public class IMForge {
           String data = IMCrypt.AES_Dec(encdata, key);
           if (data.equals(""))
             return null;
-          
+
           JSONObject unpacked = (JSONObject) JSONSerializer.toJSON(data);
           return unpacked;
         }
 
         catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             return null;
         }
     }
 
     /* IM-Messages */
-    
+
     /**
      * Regular instant message
      * @param data message plain text
@@ -200,7 +200,7 @@ public class IMForge {
     }
 
     /* authorization */
-    
+
     /**
      * @param msg message (e.g. reason for authorization request)
      * @return Authorization reqest message
@@ -257,7 +257,7 @@ public class IMForge {
     }
 
     /*---------------------------------*/
- 
+
     /**
      * @return Unique message ID consisting of the ID, a timestamp and random data.
      */
