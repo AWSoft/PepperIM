@@ -27,7 +27,8 @@ import pepperim.backend.snserver.util.ChangeRequest;
 import pepperim.backend.snserver.util.RawMessage;
 
 /**
- * Class SNServer (Simple non-blocking Server
+ * Class SNServer (Simple non-blocking Server).
+ * Creating an object starts the server.
  * @author Felix Wiemuth
  */
 public class SNServer extends Thread {
@@ -39,6 +40,10 @@ public class SNServer extends Thread {
     private ConcurrentLinkedQueue<RawMessage> in_msg; //incoming messages to be fetched by messenger thread
     private ConcurrentLinkedQueue<ChangeRequest> pendingChanges; //changes to do before 'Selector.select()' is called
 
+    /**
+     * Create a server.
+     * @param port port on which the server will run
+     */
     public SNServer(int port) {
         this.port = port;
         to_send = new ConcurrentHashMap<SocketChannel,List<byte[]>>();
@@ -46,9 +51,10 @@ public class SNServer extends Thread {
         in_msg = new ConcurrentLinkedQueue<RawMessage>();
         pendingChanges = new ConcurrentLinkedQueue<ChangeRequest>();
         keys = new ConcurrentHashMap<InetSocketAddress, SelectionKey>();
+        start();
     }
 
-    public void start_server() throws IOException {
+    private void start_server() throws IOException {
         // create selector and channel
         selector = Selector.open();
         ServerSocketChannel serverChannel = ServerSocketChannel.open();
@@ -262,14 +268,19 @@ public class SNServer extends Thread {
         }
     }
 
-    public void init_connect(String addr, int port) {
+    /**
+     * Initiate a connection to a client. Success reports are delivered
+     * over the message queue (getMessage()).
+     * @param addr The complete internet address to connect to
+     */
+    public void init_connect(InetSocketAddress addr) {
         try {
             // Create a non-blocking channel
             SocketChannel channel = SocketChannel.open();
             channel.configureBlocking(false);
 
             // Send a connection request to the server; this method is non-blocking
-            channel.connect(new InetSocketAddress(addr, port));
+            channel.connect(addr);
             pendingChanges.add(new ChangeRequest(channel, ChangeRequest.Type.REGISTER, SelectionKey.OP_CONNECT));
         }
         catch (IOException e) {
@@ -277,6 +288,11 @@ public class SNServer extends Thread {
         }
     }
 
+    /**
+     * Send a message to a connected client.
+     * @param addr The complete internet address of the receving client
+     * @param msg The message to be sent
+     */
     public void send_message(InetSocketAddress addr, String msg) {
         SelectionKey key = keys.get(addr);
         if (key != null)
@@ -285,6 +301,11 @@ public class SNServer extends Thread {
             //TODO handle
     }
 
+    /**
+     * Poll the queue of incoming messages, including different types
+     * defined in {@link util.RawMessage.Type}.
+     * @return The next message in queue or {@link null} if queue is empty.
+     */
     public RawMessage getMessage() {
         return in_msg.poll();
     }
