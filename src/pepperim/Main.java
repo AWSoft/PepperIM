@@ -11,6 +11,7 @@ package pepperim;
  * @author Anton Pirogov
  */
 public class Main {
+    public static int DEFAULT_PORT = 1706;
 
     /**
      * @param args from main function
@@ -37,8 +38,9 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        int port = DEFAULT_PORT;
+
         //parse options which are valid for all frontends
-        int port = 1706; //default port
         if (argsHaveFlag(args,"--port"))
             port = Integer.parseInt(getParam(args,"--port"));
 

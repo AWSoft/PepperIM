@@ -16,7 +16,7 @@ import org.junit.runners.Suite;
  * @author Felix Wiemuth
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({pepperim.backend.BackendSuite.class, pepperim.idserver.IdserverSuite.class, pepperim.util.UtilsSuite.class, pepperim.base.BaseSuite.class, pepperim.MainTest.class})
+@Suite.SuiteClasses({pepperim.backend.BackendSuite.class, pepperim.idserver.IdserverSuite.class, pepperim.util.UtilsSuite.class, pepperim.frontend.FrontendSuite.class, pepperim.MainTest.class})
 public class PepperimSuite {
 
     @BeforeClass
@@ -26,5 +26,5 @@ public class PepperimSuite {
     @AfterClass
     public static void tearDownClass() throws Exception {
     }
-    
+
 }
