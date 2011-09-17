@@ -9,6 +9,7 @@ package pepperim.backend;
 import pepperim.util.*;
 import pepperim.backend.IMIdentity;
 import pepperim.backend.IMStatus;
+
 import java.util.Date;
 import java.util.ArrayList;
 import net.sf.json.*;
@@ -32,14 +33,15 @@ public class IMForge {
     }
 
     /**
+     * @param port Port the messenger is listening on for connections
      * @return message to associate a messenger ID with an IP (to be sent to the ID server) ("" on failure)
      */
-    public String SVR_announce() {
+    public String SVR_announce(int port) {
         String signedid = IMCrypt.RSA_Enc(imid.getID(), imid.getPrivateKey());
         if (signedid.equals(""))
             return ""; //something went wrong Oo
         String pub = imid.getEncodedPublicKey();
-        return "HELLO "+pub+" "+signedid+"\n";
+        return pepperim.idserver.IDServer.HELLO+" "+String.valueOf(port)+" "+pub+" "+signedid+"\n";
     }
 
     /**
@@ -47,7 +49,7 @@ public class IMForge {
      * @return IP request for this ID (to be sent to the messenger server)
      */
     public String SVR_getip(String id) {
-        return "GET "+id+"\n";
+        return pepperim.idserver.IDServer.GET+" "+id+"\n";
     }
 
     /* Crypto-layer (+IM message wrapper) */

@@ -5,8 +5,10 @@
  ******************************************************/
 
 package pepperim.backend;
+import pepperim.Main;
 
 import net.sf.json.JSONObject;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -17,7 +19,7 @@ import static org.junit.Assert.*;
  * @author Anton Pirogov
  */
 public class IMForgeTest {
-    
+
     public IMForgeTest() {
     }
 
@@ -40,7 +42,7 @@ public class IMForgeTest {
         System.out.println("Generated test IDs: "+id_a.getID()+","+id_b.getID());
 
         System.out.println("Server messages:");
-        System.out.println(f_a.SVR_announce());
+        System.out.println(f_a.SVR_announce(Main.DEFAULT_PORT));
         System.out.println(f_b.SVR_getip(id_a.getID()));
 
         System.out.println("\nKey exchange:");

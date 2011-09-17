@@ -24,12 +24,20 @@ import java.net.*;
  */
 public class IDServer implements Runnable {
 
+  public static String GET    = "GET";
+  public static String HELLO  = "HELLO";
+
+  public static String INVALID= "INVALID_MSG_FORMAT";
+  public static String FUCKOFF= "FUCKOFF";
+  public static String UNKNOWN="UNKNOWN";
+  public static String OK     ="OK";
+
   private int port = 1993;
 
   private int regLifespan = 720; //minutes a registration lasts
   private int cleanupInterval = 30;  //minutes between cleanups
 
-  // Hashmap: id -> [ip, timestamp]
+  // Hashmap: id -> [ip, port, timestamp]
   private ConcurrentHashMap<String,String[]> ips = null;
 
   /**
@@ -55,7 +63,7 @@ public class IDServer implements Runnable {
                     //check entry age
                     String[] d = ips.get(id);
                     long time = new Date().getTime();
-                    long stamp = Long.parseLong(d[1]);
+                    long stamp = Long.parseLong(d[2]);
                     long age = time - stamp;
 
                     if (age > regLifespan*1000*60)
@@ -88,8 +96,6 @@ public class IDServer implements Runnable {
  * This is the class representing a connection thread
  */
 class clientThread implements Runnable {
-    private static String INVALID="INVALID_MSG_FORMAT";
-    private static String FUCKOFF="FUCKOFF";
 
     private Socket conn;
     private ConcurrentHashMap<String,String[]> ips;
@@ -101,45 +107,55 @@ class clientThread implements Runnable {
 
     private String getIPforID(String id) {
         if (ips.containsKey(id))
-            return ips.get(id)[0];
+            return ips.get(id)[0]+" "+ips.get(id)[1];
         else
-            return "UNKNOWN";
+            return IDServer.UNKNOWN;
     }
 
     /**
      * Validates the sent data. On success, puts mapping ID->IP.
      * Returns response to be transmitted back.
      * @param ip remote IP of socket
+     * @param port   transmitted listening port
      * @param b64pub transmitted public key as Base64
      * @param b64sig transmitted signature as Base64
      */
-    private String associateID(String ip, String b64pub, String b64sig) {
+    private String associateID(String ip, String port, String b64pub, String b64sig) {
         try {
           PublicKey pub = IMCrypt.decodePublicKey(b64pub);
-          if (pub == null)
-              return FUCKOFF;
+          if (pub == null) {
+              System.out.println("Invalid public key");
+              return IDServer.FUCKOFF;
+          }
+
 
           String data = IMCrypt.RSA_Dec(b64sig, pub);
-          if (data == null)
-              return FUCKOFF;
+          if (data == null) {
+              System.out.println("Could not verify");
+              return IDServer.FUCKOFF;
+          }
 
           String id = pepperim.backend.IMIdentity.IDfromPubkey(pub);
-          
-          if (!data.equals(id))
-              return FUCKOFF;
+
+          if (!data.equals(id)) {
+              System.out.println("Public key and ID do not match");
+              return IDServer.FUCKOFF;
+          }
 
           //everything is fine -> associate
-          String[] entry = new String[2];
+          String[] entry = new String[3];
           entry[0] = ip;
-          entry[1] = String.valueOf(new Date().getTime());
+          entry[1] = port;
+          entry[2] = String.valueOf(new Date().getTime());
           ips.put(id, entry);
 
           System.out.println("Online users: "+ips.size());
 
-          return "OK";
+          return IDServer.OK;
 
         } catch (Exception e) {
-          return FUCKOFF;
+          e.printStackTrace();
+          return IDServer.FUCKOFF;
         }
     }
 
@@ -154,25 +170,25 @@ class clientThread implements Runnable {
         String[] tokens = request.split("\\s+");
 
         // IP request
-        if (tokens[0].equals("GET")) {
+        if (tokens[0].equals(IDServer.GET)) {
             if (tokens.length == 2) {
                 response = getIPforID(tokens[1]);
             } else {
-                response = INVALID;
+                response = IDServer.INVALID;
             }
         }
         // IP+ID association
-        else if (tokens[0].equals("HELLO")) {
-            if (tokens.length == 3) {
+        else if (tokens[0].equals(IDServer.HELLO)) {
+            if (tokens.length == 4) {
                 String ip = conn.getInetAddress().getHostAddress();
-                response = associateID(ip, tokens[1], tokens[2]);
+                response = associateID(ip, tokens[1], tokens[2], tokens[3]);
             } else {
-                response = INVALID;
+                response = IDServer.INVALID;
             }
         }
         // bullshit
         else {
-            response = INVALID;
+            response = IDServer.INVALID;
         }
 
         // send response

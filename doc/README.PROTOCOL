@@ -6,7 +6,7 @@ containing archived: Java KeyStore (new generated own Priv/Pubkey + place for "c
 SERVER COMMUNICATION:
 when going online, associate ID and current IP by:
 client sends signed ID and pubkey
-HELLO <B64 X509 Pubkey> <B64 signed ID (privkey-encrypted)>
+HELLO <listening port> <B64 X509 Pubkey> <B64 signed ID (privkey-encrypted)>
 Server verifies ID by:
 1) verifying signature -> result=ID name 2) hashing pubkey (must get same ID-name)
 on success -> Server associates IP and ID for 24 hours
@@ -15,7 +15,8 @@ server response: OK = success, FUCKOFF = verification failed
 
 get IP for ID: client sends ID, server responds with last saved IP for this ID (if any)
 GET <idname>
-server response: <IP address> or INVALID_MSG_FORMAT
+server response: <Port> <IP address>
+             or: INVALID_MSG_FORMAT
 
 
 P2P COMMUNICATION:
