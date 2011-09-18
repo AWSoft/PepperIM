@@ -6,12 +6,36 @@
 
 package pepperim;
 
+import java.io.*;
+
+import pepperim.idserver.IDServer;
+import pepperim.frontend.ConsoleClient;
+import java.net.InetSocketAddress;
+
 /**
  * Entry point into the application
  * @author Anton Pirogov
  */
 public class Main {
     public static int DEFAULT_PORT = 1706;
+
+    public static PrintWriter logfile = null;
+    static {
+        try {
+          logfile = new PrintWriter(new FileOutputStream(new File("debug.log")));
+        } catch (Exception e) {}
+    }
+
+    /**
+     * write a message to debug log file
+     * @param msg Log message
+     */
+    public static void log(String msg) {
+      try {
+        logfile.println(msg);
+        logfile.flush();
+      } catch (Exception e) {}
+    }
 
     /**
      * @param args from main function
@@ -44,12 +68,17 @@ public class Main {
         if (argsHaveFlag(args,"--port"))
             port = Integer.parseInt(getParam(args,"--port"));
 
+        InetSocketAddress server_addr = null;
+        String server_host = getParam(args, "--server");
+        if (server_host != null)
+            server_addr = new InetSocketAddress(server_host,IDServer.DEFAULT_PORT);
+
         //Start as ID Server
         if (argsHaveFlag(args,"--idserver"))
-            new pepperim.idserver.IDServer().run();
+            new IDServer().run();
 
         //Start as IM Console Client
         if (argsHaveFlag(args,"--cui"))
-            new pepperim.frontend.ConsoleClient(port).main(args);
+            new ConsoleClient(port, server_addr).main(args);
     }
 }

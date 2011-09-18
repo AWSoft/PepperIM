@@ -15,9 +15,11 @@ server response: OK = success, FUCKOFF = verification failed
 
 get IP for ID: client sends ID, server responds with last saved IP for this ID (if any)
 GET <idname>
-server response: <Port> <IP address>
+server response: ADDRESS <ID> <IP address> <Port>
+       or when no such entry: UNKNOWN <ID>
              or: INVALID_MSG_FORMAT
 
+BYE -> makes server close connection and unregister ID/IP... "clean exit"
 
 P2P COMMUNICATION:
 crypto bootstrapping:

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import net.sf.json.*;
+import pepperim.Main;
 
 /**
  * Class representing an individual account.
@@ -102,7 +103,7 @@ public class IMIdentity {
           this.priv = IMCrypt.decodePrivateKey(strpriv);
 
         } catch (JSONException e) {
-            System.err.println(e.getMessage());
+            Main.log(e.getMessage());
             throw new Exception("Identity file is password protected!");
         }
     }
@@ -137,7 +138,7 @@ public class IMIdentity {
         }
 
         catch (IOException e) {
-          System.err.println(e.getMessage());
+          Main.log(e.getMessage());
           return false;
         }
     }

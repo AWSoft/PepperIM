@@ -6,6 +6,7 @@
 
 package pepperim.backend;
 
+import pepperim.Main;
 import pepperim.util.*;
 import pepperim.backend.IMIdentity;
 import pepperim.backend.IMStatus;
@@ -41,7 +42,7 @@ public class IMForge {
         if (signedid.equals(""))
             return ""; //something went wrong Oo
         String pub = imid.getEncodedPublicKey();
-        return pepperim.idserver.IDServer.HELLO+" "+String.valueOf(port)+" "+pub+" "+signedid+"\n";
+        return pepperim.idserver.IDServer.HELLO+" "+String.valueOf(port)+" "+pub+" "+signedid;
     }
 
     /**
@@ -49,7 +50,14 @@ public class IMForge {
      * @return IP request for this ID (to be sent to the messenger server)
      */
     public String SVR_getip(String id) {
-        return pepperim.idserver.IDServer.GET+" "+id+"\n";
+        return pepperim.idserver.IDServer.GET+" "+id;
+    }
+
+    /**
+     * @return de-associate IP and ID, close connection
+     */
+    public String SVR_bye() {
+        return pepperim.idserver.IDServer.BYE;
     }
 
     /* Crypto-layer (+IM message wrapper) */
@@ -161,7 +169,7 @@ public class IMForge {
         }
 
         catch (Exception e) {
-            System.err.println(e.getMessage());
+            Main.log(e.getMessage());
             return null;
         }
     }

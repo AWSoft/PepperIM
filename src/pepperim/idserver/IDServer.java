@@ -26,13 +26,17 @@ public class IDServer implements Runnable {
 
   public static String GET    = "GET";
   public static String HELLO  = "HELLO";
+  public static String BYE    = "BYE";
 
   public static String INVALID= "INVALID_MSG_FORMAT";
   public static String FUCKOFF= "FUCKOFF";
-  public static String UNKNOWN="UNKNOWN";
-  public static String OK     ="OK";
+  public static String UNKNOWN= "UNKNOWN";
+  public static String ADDRESS= "ADDRESS";
+  public static String OK     = "OK";
 
-  private int port = 1993;
+  public static int DEFAULT_PORT = 1993;
+
+  private int port = DEFAULT_PORT;
 
   private int regLifespan = 720; //minutes a registration lasts
   private int cleanupInterval = 30;  //minutes between cleanups
@@ -100,6 +104,8 @@ class clientThread implements Runnable {
     private Socket conn;
     private ConcurrentHashMap<String,String[]> ips;
 
+    private String conn_id = null;
+
     clientThread(Socket conn, ConcurrentHashMap<String,String[]> ips) {
         this.conn = conn;
         this.ips = ips;
@@ -107,9 +113,9 @@ class clientThread implements Runnable {
 
     private String getIPforID(String id) {
         if (ips.containsKey(id))
-            return ips.get(id)[0]+" "+ips.get(id)[1];
+            return IDServer.ADDRESS+" "+id+" "+ips.get(id)[0]+" "+ips.get(id)[1];
         else
-            return IDServer.UNKNOWN;
+            return IDServer.UNKNOWN+" "+id;
     }
 
     /**
@@ -149,6 +155,8 @@ class clientThread implements Runnable {
           entry[2] = String.valueOf(new Date().getTime());
           ips.put(id, entry);
 
+          this.conn_id = id;
+
           System.out.println("Online users: "+ips.size());
 
           return IDServer.OK;
@@ -161,44 +169,66 @@ class clientThread implements Runnable {
 
     public void run() {
       try {
+        System.out.println("DEBUG: Client connected");
+
         String response = "";
         BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         PrintStream out = new PrintStream(conn.getOutputStream());
 
         // read request string
-        String request = in.readLine();
-        String[] tokens = request.split("\\s+");
+        String request = "";
+        while(true) {
+          request = in.readLine();
+          System.out.println("DEBUG: input="+request);
 
-        // IP request
-        if (tokens[0].equals(IDServer.GET)) {
+          if (request.equals(""))
+              continue;
+
+          String[] tokens = request.split("\\s+");
+
+          if (tokens[0].equals(IDServer.BYE)) {
+              if (conn_id!=null) {
+                ips.remove(conn_id);
+                System.out.println("Online users: "+ips.size());
+              }
+              conn.close();
+              System.out.println("DEBUG: Client disconnected");
+              break;
+          }
+
+
+          // IP request
+          if (tokens[0].equals(IDServer.GET)) {
             if (tokens.length == 2) {
                 response = getIPforID(tokens[1]);
             } else {
                 response = IDServer.INVALID;
             }
-        }
-        // IP+ID association
-        else if (tokens[0].equals(IDServer.HELLO)) {
+          }
+          // IP+ID association
+          else if (tokens[0].equals(IDServer.HELLO)) {
             if (tokens.length == 4) {
                 String ip = conn.getInetAddress().getHostAddress();
                 response = associateID(ip, tokens[1], tokens[2], tokens[3]);
             } else {
                 response = IDServer.INVALID;
             }
-        }
-        // bullshit
-        else {
+          }
+          // bullshit
+          else {
             response = IDServer.INVALID;
+           }
+
+           // send response
+           out.println(response);
         }
-
-        // send response
-        out.println(response);
-
-        // Done
-        conn.close();
 
       } catch (Exception e) {
-        e.printStackTrace();
+          if (conn_id!=null) {
+            ips.remove(conn_id);
+            System.out.println("Online users: "+ips.size());
+          }
+          System.out.println("DEBUG: Client disconnected");
       }
     }
 }

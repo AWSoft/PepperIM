@@ -13,25 +13,22 @@ import net.sf.json.*;
 
 /**
  * Class representing a contact. Do not create own instances of this class. Use the apropriate methods of the IMContactList instead.
- * @author Anton Pirogov <anton dot pirogov at googlemail dot com> 
+ * @author Anton Pirogov <anton dot pirogov at googlemail dot com>
  */
 public class IMContact {
 
 
     private String id = null;
-    private PublicKey pubkey = null;
-
     private String alias = "";
-    
+
     private boolean locauth = false;
     private boolean remauth = false;
 
     /**
      * Create a new contact from scratch
      */
-    public IMContact(String id, PublicKey pubkey) {
+    public IMContact(String id) {
         this.id = id;
-        this.pubkey = pubkey;
     }
 
     /**
@@ -40,7 +37,6 @@ public class IMContact {
      */
     public IMContact(JSONObject json) {
         id = json.getString("id");
-        pubkey = IMCrypt.decodePublicKey(json.getString("pubkey"));
         alias = json.getString("alias");
         locauth = json.getBoolean("lauth");
         remauth = json.getBoolean("rauth");
@@ -55,7 +51,7 @@ public class IMContact {
         else
             this.alias = al;
     }
-    
+
     /**
      * Update local authorization state for this contact (should be done in conjunction with auth messages)
      * @param state true if you want to receive messages from this contact, false if you don't
@@ -71,7 +67,7 @@ public class IMContact {
     public void setAuthorizes(boolean state) {
         remauth = state;
     }
-    
+
     /**
      * @return The alias of the contact
      */
@@ -104,18 +100,10 @@ public class IMContact {
     }
 
     /**
-     * @return Public key of this contact
-     */
-    public PublicKey getPublicKey() {
-        return pubkey;
-    }
-
-    /**
      * @return JSON encoded string of contact
      */
     public JSONObject toJSONObject() {
-        return new JSONObject().element("id", id).element("pubkey", IMCrypt.B64_Enc(pubkey.getEncoded()))
-                               .element("alias", alias).element("lauth", locauth).element("rauth", remauth);
+        return new JSONObject().element("id", id).element("alias", alias).element("lauth", locauth).element("rauth", remauth);
     }
 
 }

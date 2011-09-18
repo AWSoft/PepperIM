@@ -12,8 +12,8 @@ import java.security.PublicKey;
 import net.sf.json.*;
 
 /**
- * Class representing a identity's contact list. You should not create own instances of this. Use IMIdentity.getContactList()
- * @author Anton Pirogov <anton dot pirogov at googlemail dot com> 
+ * Class representing a identity's contact list. Use IMIdentity.getContactList() or RuntimeContactList for access
+ * @author Anton Pirogov <anton dot pirogov at googlemail dot com>
  */
 public class IMContactList {
 
@@ -63,13 +63,13 @@ public class IMContactList {
      * @param id Messenger ID to be added
      * @return true on success, false on failure (e.g. already exists)
      */
-    public boolean add(String id, PublicKey key) {
+    public boolean add(String id) {
         for(int i=0; i<contacts.size(); i++) {
             if (contacts.get(i).getID().equals(id))
                 return false;
         }
 
-        contacts.add(new IMContact(id, key));
+        contacts.add(new IMContact(id));
         return true;
     }
 

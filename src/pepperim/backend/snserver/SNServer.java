@@ -6,6 +6,8 @@
 
 package pepperim.backend.snserver;
 
+import pepperim.Main;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
@@ -65,7 +67,7 @@ public class SNServer extends Thread {
         serverChannel.socket().bind(listenAddr);
         serverChannel.register(selector, SelectionKey.OP_ACCEPT);
 
-        log("Echo server ready. Ctrl-C to stop.");
+        Main.log("Echo server ready. Ctrl-C to stop.");
         main();
     }
 
@@ -139,7 +141,7 @@ public class SNServer extends Thread {
         to_send.put(channel, new ArrayList<byte[]>());
         //store key in 'keys' to be accessable by ID from messenger thread //TODO first get ID
         keys.put((InetSocketAddress) channel.socket().getRemoteSocketAddress(), key);
-        send_message(key, "MSG after register_connection"); //DEBUG
+        //send_message(key, "MSG after register_connection"); //DEBUG
     }
 
     /**
@@ -155,7 +157,7 @@ public class SNServer extends Thread {
         //send_message(key, "Welcome."); //DEBUG
         Socket socket = channel.socket();
         SocketAddress remoteAddr = socket.getRemoteSocketAddress();
-        log("Connected to: " + remoteAddr); //DEBUG
+        Main.log("Connected to: " + remoteAddr); //DEBUG
 
         register_connection(channel);
     }
@@ -169,7 +171,7 @@ public class SNServer extends Thread {
         try {
             channel.finishConnect(); //try to finish connection - if 'false' is returned keep 'OP_CONNECT' registered
             register_connection(channel);
-            send_message(key, "This is a test message."); //DEBUG
+//            send_message(key, "This is a test message."); //DEBUG
         }
         catch (IOException e0) {
             try {
@@ -187,7 +189,7 @@ public class SNServer extends Thread {
     private void read(SelectionKey key) throws IOException {
         SocketChannel channel = (SocketChannel) key.channel();
 
-        ByteBuffer buffer = ByteBuffer.allocate(8192);
+        ByteBuffer buffer = ByteBuffer.allocate(65536);
         int numRead = -1;
         try {
             numRead = channel.read(buffer);
@@ -200,7 +202,7 @@ public class SNServer extends Thread {
             to_send.remove(channel);
             Socket socket = channel.socket();
             SocketAddress remoteAddr = socket.getRemoteSocketAddress();
-            log("Connection closed by client: " + remoteAddr); //TODO handle
+            Main.log("Connection closed by client: " + remoteAddr); //TODO handle
             channel.close();
             return;
         }
@@ -253,17 +255,13 @@ public class SNServer extends Thread {
         }
     }
 
-    private static void log(String s) {
-        System.err.println(s);
-    }
-
     @Override
     public void run() {
         try {
             start_server();
         }
         catch (IOException e) {
-            System.err.println("IOException: " + e);
+            Main.log("SNServer> IOException: " + e);
             //TODO handle exception
         }
     }
@@ -282,6 +280,8 @@ public class SNServer extends Thread {
             // Send a connection request to the server; this method is non-blocking
             channel.connect(addr);
             pendingChanges.add(new ChangeRequest(channel, ChangeRequest.Type.REGISTER, SelectionKey.OP_CONNECT));
+
+            in_msg.add(new RawMessage(RawMessage.Type.CLIENT_CONNECTED, addr.getAddress().getHostAddress()+":"+String.valueOf(addr.getPort()) ));
         }
         catch (IOException e) {
             //TODO handle

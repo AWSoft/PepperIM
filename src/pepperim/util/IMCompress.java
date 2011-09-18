@@ -5,6 +5,7 @@
  ******************************************************/
 
 package pepperim.util;
+import pepperim.Main;
 
 import java.io.*;
 import java.util.zip.*;
@@ -28,7 +29,7 @@ public class IMCompress {
         return compr.toByteArray();
 
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            Main.log(e.getMessage());
             return null;
         }
     }
@@ -50,7 +51,7 @@ public class IMCompress {
         return unzipped.toString();
 
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            Main.log(e.getMessage());
             return "";
         }
     }

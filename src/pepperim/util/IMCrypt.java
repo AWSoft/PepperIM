@@ -6,6 +6,7 @@
 
 package pepperim.util;
 
+import pepperim.Main;
 import org.apache.commons.codec.binary.Base64;
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -102,12 +103,12 @@ public class IMCrypt {
 
         catch (NoSuchAlgorithmException ex)
         {
-            System.err.println(ex.getMessage());
+            Main.log(ex.getMessage());
             return "";
         }
         catch (UnsupportedEncodingException ex)
         {
-            System.err.println(ex.getMessage());
+            Main.log(ex.getMessage());
             return "";
         }
     }
@@ -130,7 +131,7 @@ public class IMCrypt {
 
         }
         catch (NoSuchAlgorithmException e) {
-            System.err.println(e.getMessage());
+            Main.log(e.getMessage());
             return "";
         }
     }
@@ -149,7 +150,7 @@ public class IMCrypt {
         return B64_Enc(cipher.doFinal(data.getBytes()));
         }
         catch (Exception e) {
-            System.err.println(e.getMessage());
+            Main.log(e.getMessage());
             return "";
         }
     }
@@ -168,7 +169,7 @@ public class IMCrypt {
         return new String(cipher.doFinal(B64_Dec(data)));
         }
         catch (Exception e) {
-            System.err.println(e.getMessage());
+            Main.log(e.getMessage());
             return "";
         }
     }
@@ -189,7 +190,7 @@ public class IMCrypt {
             keypair[1] = B64_Enc(keyPair.getPrivate().getEncoded());
             return keypair;
         } catch (GeneralSecurityException e) {
-            System.err.println(e.getMessage());
+            Main.log(e.getMessage());
             return null;
         }
     }
@@ -206,7 +207,7 @@ public class IMCrypt {
             PrivateKey pk = kf.generatePrivate(ks);
             return pk;
         } catch (GeneralSecurityException e) {
-            System.err.println(e.getMessage());
+            Main.log(e.getMessage());
             return null;
         }
     }
@@ -223,7 +224,7 @@ public class IMCrypt {
             PublicKey pk = kf.generatePublic(ks);
             return pk;
         } catch (GeneralSecurityException e) {
-            System.err.println(e.getMessage());
+            Main.log(e.getMessage());
             return null;
         }
     }
@@ -240,7 +241,7 @@ public class IMCrypt {
         c.init(Cipher.ENCRYPT_MODE, key);
         return B64_Enc(c.doFinal(data.getBytes()));
         } catch (GeneralSecurityException e) {
-            System.err.println(e.getMessage());
+            Main.log(e.getMessage());
             return "";
         }
     }
@@ -256,7 +257,7 @@ public class IMCrypt {
         c.init(Cipher.DECRYPT_MODE, key);
         return new String(c.doFinal(B64_Dec(data)));
         } catch (GeneralSecurityException e) {
-            System.err.println(e.getMessage());
+            Main.log(e.getMessage());
             return "";
         }
     }
@@ -275,7 +276,7 @@ public class IMCrypt {
         byte[] signature = signer.sign();
         return B64_Enc(signature);
         } catch (GeneralSecurityException e) {
-            System.err.println(e.getMessage());
+            Main.log(e.getMessage());
             return "";
         }
     }
@@ -293,7 +294,7 @@ public class IMCrypt {
         verifier.update(data.getBytes());
         return verifier.verify(B64_Dec(b64sig));
         } catch (GeneralSecurityException e) {
-            System.err.println(e.getMessage());
+            Main.log(e.getMessage());
             return false;
         }
     }
