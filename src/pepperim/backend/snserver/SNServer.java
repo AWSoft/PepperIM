@@ -193,32 +193,39 @@ public class SNServer extends Thread {
     private void read(SelectionKey key) throws IOException {
         SocketChannel channel = (SocketChannel) key.channel();
 
-        ByteBuffer buffer = ByteBuffer.allocate(65536);
-        int numRead = -1;
-        try {
-            numRead = channel.read(buffer);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
+        //repeatedly read from channel until no more data is available
+        while (true) {
+            ByteBuffer buffer = ByteBuffer.allocate(8192);
+            int numRead = -1;
+            try {
+                numRead = channel.read(buffer);
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+            //nothing to read
+            if (numRead == 0)
+                break;
+            //connection closed
+            if (numRead == -1) {
+                to_send.remove(channel);
+                Socket socket = channel.socket();
+                SocketAddress remoteAddr = socket.getRemoteSocketAddress();
+                Main.log("Connection closed by client: " + remoteAddr); //TODO handle
+                channel.close();
+                return;
+            }
+            //add new data to 'in_buffer'
+            byte[] data = new byte[numRead];
+            System.arraycopy(buffer.array(), 0, data, 0, numRead);
+            in_buffer.append(new String(data, "utf-8"));
         }
 
-        if (numRead == -1) {
-            to_send.remove(channel);
-            Socket socket = channel.socket();
-            SocketAddress remoteAddr = socket.getRemoteSocketAddress();
-            Main.log("Connection closed by client: " + remoteAddr); //TODO handle
-            channel.close();
-            return;
-        }
-
-        //add new data to 'in_buffer'
-        byte[] data = new byte[numRead];
-        System.arraycopy(buffer.array(), 0, data, 0, numRead);
-        in_buffer.append(new String(data, "utf-8"));
-
-        //check if there is a complete message in 'in_buffer'
-        int pos = in_buffer.indexOf("\n");
-        if (pos != -1) {
+        //check if there are complete messages in 'in_buffer'
+        while (true) {
+            int pos = in_buffer.indexOf("\n");
+            if (pos == -1)
+                break;
             in_msg.add(new RawMessage(RawMessage.Type.CLIENT_MSG, in_buffer.substring(0, pos)));
             in_buffer.delete(0, pos+1);
         }
