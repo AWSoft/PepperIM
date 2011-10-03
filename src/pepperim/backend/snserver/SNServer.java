@@ -30,7 +30,11 @@ import pepperim.backend.snserver.util.RawMessage;
 
 /**
  * Class SNServer (Simple non-blocking Server).
- * Creating an object starts the server.
+ * Creating an object starts the server.<br/>
+ * To shutdown the server properly, follow these steps:<br/>
+ * 1. Stop sending messages, wait for all confirmations of messages sent<br/>
+ * 2. Call 'disconnectAll' to close the remaining connections<br/>
+ * 3. Call 'getMessage()' until the queue is empty ('null' is returned')<br/>
  * @author Felix Wiemuth
  */
 public class SNServer extends Thread {
@@ -269,7 +273,7 @@ public class SNServer extends Thread {
     /**
      * Initiate a connection to a client. Success reports are delivered
      * over the message queue (getMessage()).
-     * @param addr The complete internet address to connect to
+     * @param addr The full internet address to connect to
      */
     public void init_connect(InetSocketAddress addr) {
         try {
@@ -287,10 +291,25 @@ public class SNServer extends Thread {
             //TODO handle
         }
     }
+    
+    /**
+     * Disconnect form a connected client.
+     * @param addr The full internet address of the client to be disconnected from
+     */
+    public void disconnect(InetSocketAddress addr) {
+        
+    }
+    
+    /**
+     * Disconnect from all connected clients.
+     */
+    public void disconnectAll() {
+        
+    }
 
     /**
      * Send a message to a connected client.
-     * @param addr The complete internet address of the receving client
+     * @param addr The full internet address of the receving client
      * @param msg The message to be sent
      */
     public void send_message(InetSocketAddress addr, String msg) {
