@@ -311,13 +311,15 @@ public class SNServer extends Thread {
      * Send a message to a connected client.
      * @param addr The full internet address of the receving client
      * @param msg The message to be sent
+     * @return 'false' if no connection to 'addr' exists, otherwise 'true'
      */
-    public void send_message(InetSocketAddress addr, String msg) {
+    public boolean send_message(InetSocketAddress addr, String msg) {
         SelectionKey key = keys.get(addr);
         if (key != null)
             send_message(key, msg);
-        //else
-            //TODO handle
+        else
+            return false;
+        return true;
     }
 
     /**
