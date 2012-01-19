@@ -1,4 +1,4 @@
-PepperIM: Personal P2P Extremely Reliable Instant Messanger
+PepperIM: Personal P2P Extremely Reliable Instant Messenger
 ===========================================================
 Copyright (C) 2011 Anton Pirogov, Felix Wiemuth
 
@@ -46,3 +46,13 @@ Usage
 
 ### Run application
     $ java -jar release/PepperIM.jar
+
+
+How to set up a Netbeans project of PepperIM
+--------------------------------------------
+1. Choose "File" -> "New project" from Netbeans main menu
+2. Select "Java" -> "Java Project with Existing Sources"
+3. Configure step "Name and Location" of the wizard as you want
+4. At page "Existing Sources" select "PepperIM/src/" for Source Package Folders and "PepperIM/test/" for Test Package Folders.
+5. Click Finish
+6. In your project structure, right-click on "Libraries" and choose "Add JAR/Folder...". In the dialog navigate to "PepperIM/lib", select all *.jar files and click "Open".
